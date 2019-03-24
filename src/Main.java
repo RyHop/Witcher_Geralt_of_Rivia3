@@ -138,27 +138,6 @@ public class Main {
                     countA += 1;
                     armorSet.setExtraPiece((Armor) allArmorIt.next());
                     return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
-                } else if (least == countH) {
-                    countH += 1;
-                    armorSet.setHelmet((Armor) helmetIt.next());
-
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
-                } else if (least == countC) {
-                    countC += 1;
-                    armorSet.setChest((Armor) chestIt.next());
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
-                } else if (least == countL) {
-                    countL += 1;
-                    armorSet.setLeggings((Armor) legArmorIt.next());
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
-                } else if (least == countB) {
-                    countL += 1;
-                    armorSet.setBoots((Armor) bootsIt.next());
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
-                } else if (least == countA) {
-                    countL += 1;
-                    armorSet.setExtraPiece((Armor) allArmorIt.next());
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
                 } else if (helmetDifference == min) {
                     countH += 1;
                     armorSet.setHelmet((Armor) helmetIt.next());
