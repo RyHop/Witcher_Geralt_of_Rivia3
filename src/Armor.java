@@ -3,6 +3,29 @@ public class Armor implements Comparable {
     int Cost, Value;
     double Vc;
 
+
+
+    public Armor(String name, String type, int cost, int value) {
+        this.Name = name;
+        this.Type = type;
+        this.Cost = cost;
+        this.Value = value;
+        this.Vc = (double) Value / Cost;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        int comparing = ((Armor) o).getValue();
+        return comparing - this.Value;
+    }
+
+    @Override
+    public String toString() {
+        return this.Name;
+    }
+
+    //Getters and Setters
+
     public String getName() {
         return Name;
     }
@@ -42,23 +65,5 @@ public class Armor implements Comparable {
     public void setVc(float vc) {
         Vc = vc;
     }
-
-    public Armor(String name, String type, int cost, int value) {
-        this.Name = name;
-        this.Type = type;
-        this.Cost = cost;
-        this.Value = value;
-        this.Vc = (double) Value / Cost;
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        int comparing = ((Armor) o).getValue();
-        return comparing - this.Value;
-    }
-
-    @Override
-    public String toString() {
-        return this.Name;
-    }
 }
+

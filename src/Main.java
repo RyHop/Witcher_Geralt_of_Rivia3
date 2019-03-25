@@ -1,11 +1,13 @@
 import java.util.*;
 
 public class Main {
+    //Definitions to define which armor type
     private static final String HELMET = "helmet";
     private static final String CHEST = "chest";
     private static final String LEGS = "leggings";
     private static final String BOOTS = "boots";
 
+    //Driver Method
     public static void main(String[] args) {
         //Constructing Armor List and Sets
         ArrayList<Armor> helmetArmor = new ArrayList<>();
@@ -27,11 +29,8 @@ public class Main {
 
     }
 
-    public static int change(int hello) {
-        return hello += 1;
 
-    }
-
+    //Initiate algorithm of building the most best armor Set
     public static ArmorSet findBestArmor(int currency, ArrayList<Armor> helmetArmor, ArrayList<Armor> chestArmor, ArrayList<Armor> legArmor, ArrayList<Armor> bootsArmor) {
         int crowns = currency;
         ArrayList<Armor> allArmor = new ArrayList<>();
@@ -69,14 +68,14 @@ public class Main {
 
     }
 
+    //Used to help figure out next highest Armor Set, if can't buy, recursively call it
     private static ArmorSet highestArmor(ArmorSet armorSet, int crowns, ArrayList<Armor> helmetArmor, ArrayList<Armor> chestArmor, ArrayList<Armor> legArmor, ArrayList<Armor> bootsArmor, ArrayList<Armor> allArmor, ListIterator helmetIt, ListIterator chestIt, ListIterator legArmorIt, ListIterator bootsIt, ListIterator allArmorIt, int countH, int countC, int countL, int countB, int countA) {
 
         //Highest Armor
         if (armorSet.getCost() <= crowns) {
             return armorSet;
         } else {
-            //Figure out the next highest armor
-            //First, determine the armor with the least change in difference
+
             //First, get the change in difference for each type of armor
 
 
@@ -86,6 +85,8 @@ public class Main {
             int bootDifference = bootdifference(armorSet, bootsIt);
             int extraArmorDifference = alldifference(armorSet, allArmorIt);
 
+            //Get the Value/Cost for making best decision between minimal differences
+            //tmp is used to return the iterator to previous posistion
             double helmetVCNext = ((Armor) helmetIt.next()).Vc;
             int tmp = ((Armor) helmetIt.previous()).Value;
 
@@ -101,66 +102,113 @@ public class Main {
             double allVCNext = ((Armor) allArmorIt.next()).Vc;
             tmp = ((Armor) allArmorIt.previous()).Value;
 
+            //What is the smallest differences
+            Integer differences[] = {helmetDifference, chestDifference, legDifference, bootDifference, extraArmorDifference};
+            int min = Collections.min(Arrays.asList(differences));
+
+
+            //what is the best V:C
             Double maxValue[] = {helmetVCNext, chestVCNext, legVCNext, bootVCNext, allVCNext};
             double max = Collections.max(Arrays.asList(maxValue));
 
-            Integer differences[] = {helmetDifference, chestDifference, legDifference, bootDifference, extraArmorDifference};
-            //Find Vc of duplicates
-            Integer counters[] = {countA, countB, countC, countH, countL};
-            int least = Collections.min(Arrays.asList(counters));
+            //Getting the minimal change in armor Value
+            ArrayList<Integer> minimals = new ArrayList<>();
+            for (int k = 0; k < differences.length; k++) {
+                if (differences[k] == min) {
+                    minimals.add(k); //Putting in indexes
+                }
+            }
+            //Get an array of the Vc with minimal
+            ArrayList<Double> maximals = new ArrayList<>();
+            for (int y = 0; y < minimals.size(); y++) {
+                maximals.add(maxValue[minimals.get(y)]); //Minimals have indexes of armor who's smallest. take those indexes, and take the respective maximal VC value
+            }
+            //Find the highest Vc that we know is a minimal
+            Double maxVc = maximals.get(0);
+            for (int p = 0; p < maximals.size(); p++) {
+                if (maxVc < maximals.get(p)) {
+                    maxVc = maximals.get(p);
+                }
 
+            }
+            //Get the position of the maxValue in the maxValue array
 
-            int min = Collections.min(Arrays.asList(differences));
+            int position = 0;
+            for (int r = 0; r < maxValue.length; r++) {
+                if (maxVc == maxValue[r]) {
+                    position = r; //return the position
+                }
+            }
+            //Now since we have the maximal Vc value of the smallest difference, set whoever has the maxVc value to the change in armor
+            //Intuitively, the maxVc value corresponds to the smallest change in difference..so just grab whoever maxVc value equals the armos value
+            //Since we kept track of indexes, we know the position equals a certain armor
 
             try {
-                if (min == helmetDifference && helmetVCNext == max) {
-                    armorSet.setHelmet((Armor) helmetIt.next());
-                    countH += 1;
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
+                switch (position) {
+                    case 0:
+                        // 0 is helmet
+                        if (helmetIt.hasNext()) {
+                            armorSet.setHelmet((Armor) helmetIt.next());
+                            countH += 1;
 
-                } else if (min == chestDifference && chestVCNext == max) {
-                    countC += 1;
-                    armorSet.setChest((Armor) chestIt.next());
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
+                            return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
+                        } else {
+                            //Render inactive..so set a dummy armor at the end of respective array..so even if has minimal..it wont get picked again.
+                            helmetArmor.add(new Armor("IGNORE", "IGNORE", Integer.MAX_VALUE, Integer.MIN_VALUE));
+                            return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
+                        }
 
-                } else if (min == legDifference && legVCNext == max) {
-                    countL += 1;
-                    armorSet.setLeggings((Armor) legArmorIt.next());
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
+                    case 1:
+                        //1 is chest
+                        if (chestIt.hasNext()) {
+                            armorSet.setChest((Armor) chestIt.next());
+                            return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
+                        } else {
+                            //Render inactive..so set a dummy armor at the end of respective array..so even if has minimal..it wont get picked again.
+                            chestArmor.add(new Armor("IGNORE", "IGNORE", Integer.MAX_VALUE, Integer.MIN_VALUE));
+                            return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
+                        }
+                    case 2:
+                        //2 is legs
+                        if (legArmorIt.hasNext()) {
+                            countL += 1;
+                            armorSet.setLeggings((Armor) legArmorIt.next());
+                            return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
+                        } else {
+                            //Render inactive..so set a dummy armor at the end of respective array..so even if has minimal..it wont get picked again.
+                            legArmor.add(new Armor("IGNORE", "IGNORE", Integer.MAX_VALUE, Integer.MIN_VALUE));
+                            return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
+                        }
+                    case 3:
+                        //3 is boots
+                        if (bootsIt.hasNext()) {
+                            countB += 1;
+                            armorSet.setBoots((Armor) bootsIt.next());
+                            return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
+                        } else {
+                            //Render inactive..so set a dummy armor at the end of respective array..so even if has minimal..it wont get picked again.
+                            bootsArmor.add(new Armor("IGNORE", "IGNORE", Integer.MAX_VALUE, Integer.MIN_VALUE));
+                            return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
+                        }
+                    case 4:
+                        //Four is extra piece
+                        if (allArmorIt.hasNext()) {
+                            countA += 1;
+                            armorSet.setExtraPiece((Armor) allArmorIt.next());
+                        } else {
+                            //Render inactive..so set a dummy armor at the end of respective array..so even if has minimal..it wont get picked again.
+                            allArmor.add(new Armor("IGNORE", "IGNORE", Integer.MAX_VALUE, Integer.MIN_VALUE));
+                            return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
+                        }
+                    default:
+                        //Default extra piece because its the safest best of trying all the armor before giving up
+                        countA += 1;
+                        armorSet.setExtraPiece((Armor) allArmorIt.next());
+                        return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
 
-                } else if (min == bootDifference && bootVCNext == max) {
-                    countB += 1;
-                    armorSet.setBoots((Armor) bootsIt.next());
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
-
-                } else if (min == extraArmorDifference && allVCNext == max) {
-                    countA += 1;
-                    armorSet.setExtraPiece((Armor) allArmorIt.next());
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
-                } else if (helmetDifference == min) {
-                    countH += 1;
-                    armorSet.setHelmet((Armor) helmetIt.next());
-
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
-                } else if (chestDifference == min) {
-                    countC += 1;
-                    armorSet.setChest((Armor) chestIt.next());
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
-
-                } else if (legDifference == min) {
-                    countL += 1;
-                    armorSet.setLeggings((Armor) legArmorIt.next());
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
-                } else if (bootDifference == min) {
-                    countB += 1;
-                    armorSet.setBoots((Armor) bootsIt.next());
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
-                } else if (extraArmorDifference == min) {
-                    armorSet.setExtraPiece((Armor) allArmorIt.next());
-                    return highestArmor(armorSet, crowns, helmetArmor, chestArmor, legArmor, bootsArmor, allArmor, helmetIt, chestIt, legArmorIt, bootsIt, allArmorIt, countH, countC, countL, countB, countA);
-                } else {
-                    return null;
                 }
+
+
             } catch (NoSuchElementException e) {
                 System.out.println(" There is nothing you can buy!");
                 return null;
@@ -209,6 +257,7 @@ public class Main {
         return currentValue - potentialValue;
     }
 
+    //Inventory list from website. Pre-sorted to avoid confusion.
     public static void addData(ArrayList<Armor> helmetArmor, ArrayList<Armor> chestArmor, ArrayList<Armor> legArmor, ArrayList<Armor> bootsArmor) {
 
 

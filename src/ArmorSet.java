@@ -7,6 +7,36 @@ public class ArmorSet {
     private int Value;
     private int Cost;
 
+
+
+
+    public ArmorSet(Armor chest, Armor legs, Armor helmet, Armor boots, Armor extrapiece) {
+        this.Chest = chest;
+        this.Leggings = legs;
+        this.Helmet = helmet;
+        this.Boots = boots;
+        this.ExtraPiece = extrapiece;
+        this.Value = Chest.Value + Leggings.Value + Helmet.Value + Boots.Value + ExtraPiece.Value;
+        this.Cost = Chest.Cost + Leggings.Cost + Helmet.Cost + Boots.Cost + ExtraPiece.Cost;
+    }
+
+
+    @Override
+    public String toString() {
+        return "\n" + Helmet.Name + "\n " + Chest.Name + "\n " + Leggings.Name + "\n " + Boots.Name + "\n " + ExtraPiece.Name;
+    }
+
+    //resetCost is for when the armorSet has changed
+    private void resetCost() {
+        this.Cost = this.Chest.Cost + this.Helmet.Cost + this.Boots.Cost + this.ExtraPiece.Cost + this.Leggings.Cost;
+    }
+
+    //resetValue is for when armorSet has changed
+    private void resetValue() {
+        this.Value = this.Chest.Value + this.Helmet.Value + this.Boots.Value + this.ExtraPiece.Value + this.Leggings.Value;
+    }
+
+    //Getters and Setters
     public Armor getChest() {
         return Chest;
     }
@@ -66,45 +96,5 @@ public class ArmorSet {
 
     public int getCost() {
         return Cost;
-    }
-
-
-    public ArmorSet(Armor chest, Armor legs, Armor helmet, Armor boots, Armor extrapiece) {
-        this.Chest = chest;
-        this.Leggings = legs;
-        this.Helmet = helmet;
-        this.Boots = boots;
-        this.ExtraPiece = extrapiece;
-        this.Value = Chest.Value + Leggings.Value + Helmet.Value + Boots.Value + ExtraPiece.Value;
-        this.Cost = Chest.Cost + Leggings.Cost + Helmet.Cost + Boots.Cost + ExtraPiece.Cost;
-    }
-
-    public ArmorSet() {
-
-
-    }
-
-    public void Empty() {
-        this.Chest = null;
-        this.Leggings = null;
-        this.Helmet = null;
-        this.Boots = null;
-        this.ExtraPiece = null;
-        this.Value = 0;
-        this.Cost = 0;
-
-    }
-
-    @Override
-    public String toString() {
-        return "\n" + Helmet.Name + "\n " + Chest.Name + "\n " + Leggings.Name + "\n " + Boots.Name + "\n " + ExtraPiece.Name;
-    }
-
-    private void resetCost() {
-        this.Cost = this.Chest.Cost + this.Helmet.Cost + this.Boots.Cost + this.ExtraPiece.Cost + this.Leggings.Cost;
-    }
-
-    private void resetValue() {
-        this.Value = this.Chest.Value + this.Helmet.Value + this.Boots.Value + this.ExtraPiece.Value + this.Leggings.Value;
     }
 }
